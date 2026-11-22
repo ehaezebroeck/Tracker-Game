@@ -96,29 +96,22 @@ function App() {
       <header className="hud">
         <div className="title-row">
           <h1>Tracker</h1>
-          <p className="tagline">You can run, but you can't hide. I'll find you...</p>
-          <p className="tagline">Just when you think it's over, I'm standing right behind you...</p>
+          <p className="tagline">You can run, but you can't hide. <span className="tagline-threat">I'll find you...</span></p>
+          <p className="tagline">Just when you think it's over, <span className="tagline-threat">I'm standing right behind you...</span></p>
         </div>
 
         <div className="stats">
-          <div>
+          <div className="distance-display">
             <span className="stat-label">Distance Traveled</span>
             <strong className="stat-value">{state.turns} steps</strong>
           </div>
-        </div>
-
-        <p className="log" role="status">
-          {state.log}
-        </p>
-
-        <div className="actions">
           <button
             type="button"
             className={debugReveal ? 'toggle on' : 'toggle'}
             aria-pressed={debugReveal}
             onClick={() => setDebugReveal((open) => !open)}
           >
-            Debug: Reveal Enemy
+            Debug: Reveal Tracker
           </button>
         </div>
       </header>

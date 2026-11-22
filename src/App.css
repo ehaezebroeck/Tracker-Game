@@ -25,8 +25,14 @@
   font-size: 0.95rem;
 }
 
+.tagline-threat {
+  color: #8f1d2c;
+}
+
 .stats {
   display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
   gap: 1.75rem;
 }
 
@@ -49,12 +55,6 @@
   margin: 0;
   min-height: 2.7em;
   color: #c8c8c8;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
 }
 
 button {
@@ -161,8 +161,8 @@ button:disabled {
 }
 
 .cell-enemy::before {
-  background: #e15b5b;
-  box-shadow: 0 0 0 2px #8d2e2e;
+  background: #8f1d2c;
+  box-shadow: 0 0 0 2px #8f1d2c;
 }
 
 .cell-player.cell-enemy::after {
@@ -210,10 +210,10 @@ button:disabled {
 
 .game-over h2 {
   margin: 0;
-  color: #e15b5b;
+  color: #8f1d2c;
 }
 
 .game-over p {
   margin: 0;
-  color: #b93b46;
+  color: #6f1721;
 }
