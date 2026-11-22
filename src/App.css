@@ -38,8 +38,9 @@
 
 .stat-label {
   display: block;
-  color: #969696;
+  color: #a4a4a4;
   font-size: 0.72rem;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -83,10 +84,59 @@ button:disabled {
   border-color: #303030;
 }
 
-.toggle.on {
-  background: #3a2a2a;
-  border-color: #8a4a4a;
+.reveal-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #969696;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.reveal-switch:hover:not(:disabled) {
+  background: transparent;
+  color: #c8c8c8;
+}
+
+.switch-track {
+  position: relative;
+  width: 30px;
+  height: 16px;
+  border: 1px solid #454545;
+  border-radius: 999px;
+  background: #171717;
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #777777;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.reveal-switch.on {
   color: #ffc1c1;
+  border: 0;
+  background: transparent;
+}
+
+.reveal-switch.on .switch-track {
+  border-color: #8a4a4a;
+  background: #3a2a2a;
+}
+
+.reveal-switch.on .switch-thumb {
+  transform: translateX(14px);
+  background: #8f1d2c;
 }
 
 .board-wrap {
