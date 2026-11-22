@@ -79,7 +79,7 @@ function App() {
     <main className="app">
       <header className="hud">
         <div className="title-row">
-          <h1>Relentless</h1>
+          <h1>Tracker</h1>
           <p className="tagline">You can run, but you can't hide. I'll find you...</p>
           <p className="tagline">Just when you think it's over, I'm standing right behind you...</p>
         </div>
@@ -88,10 +88,6 @@ function App() {
           <div>
             <span className="stat-label">Distance Traveled</span>
             <strong className="stat-value">{state.turns} steps</strong>
-          </div>
-          <div>
-            <span className="stat-label">Survival Skill</span>
-            <strong className="stat-value">{state.score}</strong>
           </div>
         </div>
 
@@ -127,7 +123,6 @@ function App() {
           <div className="game-over">
             <h2>Game over</h2>
             <p>{state.log}</p>
-            <p className="final-score">Score {state.score}</p>
             <button type="button" onClick={() => dispatch({ type: 'RESTART' })}>
               Restart
             </button>

@@ -37,7 +37,6 @@ export function createInitialState() {
   return {
     player: { x: 0, y: 0 },
     enemy: { x: GRID_SIZE - 1, y: GRID_SIZE - 1 },
-    score: 0,
     turns: 0,
     status: 'playing',
     log: 'The hunt begins. The enemy is hidden.',
@@ -134,7 +133,6 @@ export function gameReducer(state, action) {
         player,
         enemy,
         flash: null,
-        score: state.score + 1,
         turns: state.turns + 1,
         log: `Moved ${moveName(dx, dy)}. The enemy closed in.`,
       }
@@ -146,8 +144,7 @@ export function gameReducer(state, action) {
         ...state,
         flash: { x: state.enemy.x, y: state.enemy.y },
         enemy: respawnAt(state.player, action.roll),
-        score: state.score + 10,
-        log: 'You struck. +10. It vanished and reformed in a corner.',
+        log: 'You struck. It vanished and reformed in a corner.',
       }
     }
 
