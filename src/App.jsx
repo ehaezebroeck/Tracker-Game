@@ -46,6 +46,12 @@ function App() {
 
   useEffect(() => {
     function onKeyDown(event) {
+      if (event.key === 'Enter' && state.status === 'gameover') {
+        event.preventDefault()
+        dispatch({ type: 'RESTART' })
+        return
+      }
+
       const move = KEY_MOVES[event.key.toLowerCase()]
       if (move) {
         event.preventDefault()
