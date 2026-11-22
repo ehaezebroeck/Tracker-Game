@@ -137,10 +137,10 @@ function App() {
         />
         {state.status === 'gameover' && (
           <div className="game-over">
-            <h2>Game over</h2>
-            <p>{state.log}</p>
+            <h2>You're dead</h2>
+            <p>You survived {state.turns} steps.</p>
             <button type="button" onClick={() => dispatch({ type: 'RESTART' })}>
-              Restart
+              Try Again
             </button>
           </div>
         )}
