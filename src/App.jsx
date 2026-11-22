@@ -8,6 +8,8 @@ import {
 } from './logic/gameReducer'
 import './App.css'
 
+const TRACKER_REVEAL_MS = 500
+
 const KEY_MOVES = {
   arrowup: [0, 1],
   w: [0, 1],
@@ -22,8 +24,10 @@ const KEY_MOVES = {
 function App() {
   const [state, dispatch] = useReducer(gameReducer, null, createInitialState)
   const [debugReveal, setDebugReveal] = useState(false)
+  const trackerReveal = state.trackerReveal
 
   function moveBy(dx, dy) {
+    if (trackerReveal) return
     if (state.status !== 'playing') return
     if (!inBounds(state.player.x + dx, state.player.y + dy)) return
     dispatch({
@@ -45,12 +49,21 @@ function App() {
   }, [state.flash])
 
   useEffect(() => {
+    if (state.status !== 'playing' || !trackerReveal) return undefined
+
+    const id = setTimeout(() => dispatch({ type: 'CLEAR_TRACKER_REVEAL' }), TRACKER_REVEAL_MS)
+    return () => clearTimeout(id)
+  }, [state.status, trackerReveal])
+
+  useEffect(() => {
     function onKeyDown(event) {
       if (event.key === 'Enter' && state.status === 'gameover') {
         event.preventDefault()
         dispatch({ type: 'RESTART' })
         return
       }
+
+      if (trackerReveal) return
 
       const move = KEY_MOVES[event.key.toLowerCase()]
       if (move) {
@@ -70,7 +83,7 @@ function App() {
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [state])
+  }, [state, trackerReveal])
 
   return (
     <main className="app">
@@ -108,7 +121,9 @@ function App() {
         <Grid
           player={state.player}
           enemy={state.enemy}
-          reveal={debugReveal}
+          reveal={debugReveal || trackerReveal}
+          lightsOut={trackerReveal && state.turns > 0 && state.turns % 7 === 0}
+          paused={trackerReveal}
           flash={state.flash}
           status={state.status}
           onCellClick={onCellClick}

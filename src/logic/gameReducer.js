@@ -30,7 +30,7 @@ export function isOrthogonalNeighbor(from, x, y) {
 }
 
 export function canStrike(state) {
-  return state.status === 'playing' && chebyshev(state.player, state.enemy) === 1
+  return !state.trackerReveal && state.status === 'playing' && chebyshev(state.player, state.enemy) === 1
 }
 
 export function createInitialState() {
@@ -39,6 +39,7 @@ export function createInitialState() {
     enemy: { x: GRID_SIZE - 1, y: GRID_SIZE - 1 },
     turns: 0,
     status: 'playing',
+    trackerReveal: true,
     log: 'The hunt begins. The enemy is hidden.',
     flash: null,
   }
@@ -128,12 +129,14 @@ export function gameReducer(state, action) {
         }
       }
 
+      const turns = state.turns + 1
       return {
         ...state,
         player,
         enemy,
         flash: null,
-        turns: state.turns + 1,
+        turns,
+        trackerReveal: turns % 7 === 0,
         log: `Moved ${moveName(dx, dy)}. The enemy closed in.`,
       }
     }
@@ -151,6 +154,11 @@ export function gameReducer(state, action) {
     case 'CLEAR_FLASH': {
       if (!state.flash) return state
       return { ...state, flash: null }
+    }
+
+    case 'CLEAR_TRACKER_REVEAL': {
+      if (!state.trackerReveal) return state
+      return { ...state, trackerReveal: false }
     }
 
     case 'RESTART':

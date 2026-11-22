@@ -105,6 +105,17 @@ button:disabled {
   border-radius: 14px;
 }
 
+.grid.lights-out {
+  background: #050608;
+  border-color: #050608;
+}
+
+.grid.lights-out .cell {
+  background: #050608;
+  border: 0;
+  box-shadow: none;
+}
+
 .cell {
   position: relative;
   padding: 0;
