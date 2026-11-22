@@ -40,6 +40,8 @@ export function createInitialState() {
     turns: 0,
     status: 'playing',
     trackerReveal: true,
+    enemyPath: [{ x: GRID_SIZE - 1, y: GRID_SIZE - 1 }],
+    bloodTrail: null,
     log: 'The hunt begins. The enemy is hidden.',
     flash: null,
   }
@@ -62,15 +64,18 @@ function pickIndex(roll, length) {
 
 function chase(enemy, player, roll) {
   let next = { ...enemy }
+  const path = []
 
   if (next.y !== player.y) {
     next = { ...next, y: stepToward(next.y, player.y) }
-    if (sameCell(next, player)) return { enemy: next, caught: true }
+    path.push({ ...next })
+    if (sameCell(next, player)) return { enemy: next, path, caught: true }
   }
 
   if (next.x !== player.x) {
     next = { ...next, x: stepToward(next.x, player.x) }
-    if (sameCell(next, player)) return { enemy: next, caught: true }
+    path.push({ ...next })
+    if (sameCell(next, player)) return { enemy: next, path, caught: true }
   }
 
   const options = validSteps(next)
@@ -78,10 +83,11 @@ function chase(enemy, player, roll) {
     const index = pickIndex(roll, options.length)
     const dir = options[index]
     next = { x: next.x + dir.dx, y: next.y + dir.dy }
-    if (sameCell(next, player)) return { enemy: next, caught: true }
+    path.push({ ...next })
+    if (sameCell(next, player)) return { enemy: next, path, caught: true }
   }
 
-  return { enemy: next, caught: false }
+  return { enemy: next, path, caught: false }
 }
 
 function moveName(dx, dy) {
@@ -117,7 +123,7 @@ export function gameReducer(state, action) {
         }
       }
 
-      const { enemy, caught } = chase(state.enemy, player, action.roll)
+      const { enemy, path, caught } = chase(state.enemy, player, action.roll)
       if (caught) {
         return {
           ...state,
@@ -130,11 +136,20 @@ export function gameReducer(state, action) {
       }
 
       const turns = state.turns + 1
+      const enemyPath = [...state.enemyPath]
+      for (const position of path) {
+        const previous = enemyPath[enemyPath.length - 1]
+        if (!previous || previous.x !== position.x || previous.y !== position.y) {
+          enemyPath.push({ ...position })
+        }
+      }
       return {
         ...state,
         player,
         enemy,
+        enemyPath,
         flash: null,
+        bloodTrail: null,
         turns,
         trackerReveal: turns % 7 === 0,
         log: `Moved ${moveName(dx, dy)}. The enemy closed in.`,
@@ -143,12 +158,24 @@ export function gameReducer(state, action) {
 
     case 'STRIKE': {
       if (!canStrike(state)) return state
+      const startingCorner = { x: state.enemy.x, y: state.enemy.y }
+      const respawn = respawnAt(state.player, action.roll)
+      const trail = [...state.enemyPath, startingCorner].filter((cell, index, cells) =>
+        cells.findIndex((other) => other.x === cell.x && other.y === cell.y) === index,
+      )
       return {
         ...state,
-        flash: { x: state.enemy.x, y: state.enemy.y },
-        enemy: respawnAt(state.player, action.roll),
+        flash: startingCorner,
+        enemy: respawn,
+        bloodTrail: trail,
+        enemyPath: [respawn],
         log: 'You struck. It vanished and reformed in a corner.',
       }
+    }
+
+    case 'CLEAR_BLOOD_TRAIL': {
+      if (!state.bloodTrail) return state
+      return { ...state, bloodTrail: null }
     }
 
     case 'CLEAR_FLASH': {

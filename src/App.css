@@ -116,6 +116,13 @@ button:disabled {
   box-shadow: none;
 }
 
+.grid.lights-out .cell-blood-trail,
+.grid .cell.cell-blood-trail,
+.cell.cell-blood-trail:disabled {
+  background: #8f1d2c;
+  box-shadow: none;
+}
+
 .cell {
   position: relative;
   padding: 0;
@@ -168,6 +175,11 @@ button:disabled {
   inset: auto auto 22% 22%;
   width: 42%;
   height: 42%;
+}
+
+.cell-blood-trail {
+  background: #8f1d2c;
+  box-shadow: none;
 }
 
 .cell-flash {

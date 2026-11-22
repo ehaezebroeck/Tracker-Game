@@ -49,6 +49,12 @@ function App() {
   }, [state.flash])
 
   useEffect(() => {
+    if (!state.bloodTrail) return undefined
+    const id = setTimeout(() => dispatch({ type: 'CLEAR_BLOOD_TRAIL' }), 500)
+    return () => clearTimeout(id)
+  }, [state.bloodTrail])
+
+  useEffect(() => {
     if (state.status !== 'playing' || !trackerReveal) return undefined
 
     const id = setTimeout(() => dispatch({ type: 'CLEAR_TRACKER_REVEAL' }), TRACKER_REVEAL_MS)
@@ -125,6 +131,7 @@ function App() {
           lightsOut={trackerReveal && state.turns > 0 && state.turns % 7 === 0}
           paused={trackerReveal}
           flash={state.flash}
+          bloodTrail={state.bloodTrail}
           status={state.status}
           onCellClick={onCellClick}
         />
