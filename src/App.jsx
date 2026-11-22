@@ -22,7 +22,6 @@ const KEY_MOVES = {
 function App() {
   const [state, dispatch] = useReducer(gameReducer, null, createInitialState)
   const [debugReveal, setDebugReveal] = useState(false)
-  const strikeReady = canStrike(state)
 
   function moveBy(dx, dy) {
     if (state.status !== 'playing') return
@@ -31,14 +30,6 @@ function App() {
       type: 'MOVE',
       dx,
       dy,
-      roll: Math.random(),
-    })
-  }
-
-  function strike() {
-    if (!canStrike(state)) return
-    dispatch({
-      type: 'STRIKE',
       roll: Math.random(),
     })
   }
@@ -96,9 +87,6 @@ function App() {
         </p>
 
         <div className="actions">
-          <button type="button" onClick={strike} disabled={!strikeReady}>
-            Strike / Kill
-          </button>
           <button
             type="button"
             className={debugReveal ? 'toggle on' : 'toggle'}
