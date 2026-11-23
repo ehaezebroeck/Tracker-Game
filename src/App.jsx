@@ -113,7 +113,7 @@ function App() {
             aria-checked={debugReveal}
             onClick={() => setDebugReveal((open) => !open)}
           >
-            <span>Reveal</span>
+            <span>Easy Mode</span>
             <span className="switch-track" aria-hidden="true">
               <span className="switch-thumb" />
             </span>
