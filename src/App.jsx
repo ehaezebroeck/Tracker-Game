@@ -26,6 +26,12 @@ function App() {
   const [debugReveal, setDebugReveal] = useState(false)
   const trackerReveal = state.trackerReveal
   const lightsOut = trackerReveal && state.turns > 0 && state.turns % 7 === 0
+  const trackerNearPlayer =
+    state.status === 'playing' &&
+    Math.max(
+      Math.abs(state.player.x - state.enemy.x),
+      Math.abs(state.player.y - state.enemy.y),
+    ) <= 2
 
   function moveBy(dx, dy) {
     if (trackerReveal) return
@@ -96,9 +102,15 @@ function App() {
     <main className={lightsOut ? 'app lights-out-app' : 'app'}>
       <header className="hud">
         <div className="title-row">
-          <h1>Tracker</h1>
-          <p className="tagline"><span className="tagline-threat">You can run, but you can't hide. I'll find you...</span></p>
-          <p className="tagline"><span className="tagline-threat">Just when you think it's over, I'm standing right behind you...</span></p>
+          <h1 className={trackerNearPlayer ? 'tracker-title tracker-found' : 'tracker-title'}>
+            {trackerNearPlayer ? 'I found you.' : 'Tracker'}
+          </h1>
+          <p className={trackerNearPlayer ? 'tagline threat-hidden' : 'tagline'}>
+            <span className="tagline-threat">You can run, but you can't hide. I'll find you...</span>
+          </p>
+          <p className={trackerNearPlayer ? 'tagline threat-hidden' : 'tagline'}>
+            <span className="tagline-threat">Just when you think it's over, I'm standing right behind you...</span>
+          </p>
         </div>
 
         <div className="stats">
@@ -128,6 +140,7 @@ function App() {
           enemy={state.enemy}
           reveal={debugReveal || trackerReveal}
           lightsOut={lightsOut}
+          trackerNearPlayer={trackerNearPlayer}
           paused={trackerReveal}
           flash={state.flash}
           bloodTrail={state.bloodTrail}

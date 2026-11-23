@@ -3,9 +3,15 @@ import { GRID_SIZE, isOrthogonalNeighbor } from '../logic/gameReducer'
 const ROWS = Array.from({ length: GRID_SIZE }, (_, index) => GRID_SIZE - 1 - index)
 const COLS = Array.from({ length: GRID_SIZE }, (_, index) => index)
 
-export default function Grid({ player, enemy, reveal, lightsOut, paused, flash, bloodTrail, status, onCellClick }) {
+export default function Grid({ player, enemy, reveal, lightsOut, trackerNearPlayer, paused, flash, bloodTrail, status, onCellClick }) {
+  const gridClass = lightsOut
+    ? 'grid lights-out'
+    : trackerNearPlayer
+      ? 'grid tracker-near-player'
+      : 'grid'
+
   return (
-    <div className={lightsOut ? 'grid lights-out' : 'grid'} role="grid" aria-label="Board">
+    <div className={gridClass} role="grid" aria-label="Board">
       {ROWS.flatMap((y) =>
         COLS.map((x) => {
           const overlapAtGameOver =
