@@ -25,6 +25,7 @@ function App() {
   const [state, dispatch] = useReducer(gameReducer, null, createInitialState)
   const [debugReveal, setDebugReveal] = useState(false)
   const trackerReveal = state.trackerReveal
+  const lightsOut = trackerReveal && state.turns > 0 && state.turns % 7 === 0
 
   function moveBy(dx, dy) {
     if (trackerReveal) return
@@ -92,7 +93,7 @@ function App() {
   }, [state, trackerReveal])
 
   return (
-    <main className="app">
+    <main className={lightsOut ? 'app lights-out-app' : 'app'}>
       <header className="hud">
         <div className="title-row">
           <h1>Tracker</h1>
@@ -126,7 +127,7 @@ function App() {
           player={state.player}
           enemy={state.enemy}
           reveal={debugReveal || trackerReveal}
-          lightsOut={trackerReveal && state.turns > 0 && state.turns % 7 === 0}
+          lightsOut={lightsOut}
           paused={trackerReveal}
           flash={state.flash}
           bloodTrail={state.bloodTrail}

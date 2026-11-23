@@ -7,6 +7,19 @@
   padding: 1.5rem 1rem 2.5rem;
 }
 
+.lights-out-app,
+.lights-out-app .hud,
+.lights-out-app .hud * {
+  color: #050505;
+  border-color: #050505;
+}
+
+.lights-out-app .hud button,
+.lights-out-app .hud .switch-track,
+.lights-out-app .hud .switch-thumb {
+  background: #050505;
+}
+
 .hud {
   width: min(100%, 520px);
   display: grid;
