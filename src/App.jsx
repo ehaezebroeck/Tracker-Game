@@ -8,7 +8,7 @@ import {
 } from './logic/gameReducer'
 import './App.css'
 
-const TRACKER_REVEAL_MS = 500
+const TRACKER_REVEAL_MS = 650
 
 const KEY_MOVES = {
   arrowup: [0, 1],
@@ -57,7 +57,7 @@ function App() {
 
   useEffect(() => {
     if (!state.bloodTrail) return undefined
-    const id = setTimeout(() => dispatch({ type: 'CLEAR_BLOOD_TRAIL' }), 500)
+    const id = setTimeout(() => dispatch({ type: 'CLEAR_BLOOD_TRAIL' }), 650)
     return () => clearTimeout(id)
   }, [state.bloodTrail])
 
