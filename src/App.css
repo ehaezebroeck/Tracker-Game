@@ -253,6 +253,12 @@ button:disabled {
   height: 42%;
 }
 
+.cell-strike-zone,
+.cell-strike-zone:disabled {
+  background: #f5f5f5;
+  box-shadow: none;
+}
+
 .cell-blood-trail {
   background: #8f1d2c;
   box-shadow: none;

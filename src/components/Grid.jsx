@@ -3,7 +3,7 @@ import { GRID_SIZE, isOrthogonalNeighbor } from '../logic/gameReducer'
 const ROWS = Array.from({ length: GRID_SIZE }, (_, index) => GRID_SIZE - 1 - index)
 const COLS = Array.from({ length: GRID_SIZE }, (_, index) => index)
 
-export default function Grid({ player, enemy, reveal, lightsOut, trackerNearPlayer, paused, flash, bloodTrail, status, onCellClick }) {
+export default function Grid({ player, enemy, reveal, lightsOut, trackerNearPlayer, paused, flash, bloodTrail, strikeZone, status, onCellClick }) {
   const gridClass = lightsOut
     ? 'grid lights-out'
     : trackerNearPlayer
@@ -20,6 +20,7 @@ export default function Grid({ player, enemy, reveal, lightsOut, trackerNearPlay
           const enemyHere = enemy.x === x && enemy.y === y
           const flashHere = flash?.x === x && flash?.y === y
           const bloodHere = bloodTrail?.some((cell) => cell.x === x && cell.y === y)
+          const strikeZoneHere = !bloodHere && strikeZone?.some((cell) => cell.x === x && cell.y === y)
           const showEnemy = overlapAtGameOver || (reveal && enemyHere) || flashHere
           const clickable = !paused && status === 'playing' && isOrthogonalNeighbor(player, x, y)
           const className = [
@@ -28,6 +29,7 @@ export default function Grid({ player, enemy, reveal, lightsOut, trackerNearPlay
             showEnemy ? 'cell-enemy' : '',
             flashHere ? 'cell-flash' : '',
             bloodHere ? 'cell-blood-trail' : '',
+            strikeZoneHere ? 'cell-strike-zone' : '',
             clickable ? 'cell-move' : '',
           ]
             .filter(Boolean)

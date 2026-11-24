@@ -42,6 +42,7 @@ export function createInitialState() {
     trackerReveal: true,
     enemyPath: [{ x: GRID_SIZE - 1, y: GRID_SIZE - 1 }],
     bloodTrail: null,
+    strikeZone: null,
     log: 'The hunt begins. The enemy is hidden.',
     flash: null,
   }
@@ -105,7 +106,7 @@ function respawnAt(player, roll) {
 export function gameReducer(state, action) {
   switch (action.type) {
     case 'MOVE': {
-      if (state.status !== 'playing') return state
+      if (state.status !== 'playing' || state.strikeZone) return state
       const dx = action.dx
       const dy = action.dy
       if (Math.abs(dx) + Math.abs(dy) !== 1) return state
@@ -157,8 +158,24 @@ export function gameReducer(state, action) {
     }
 
     case 'STRIKE': {
-      if (!canStrike(state)) return state
+      if (state.status !== 'playing' || state.trackerReveal) return state
       const startingCorner = { x: state.enemy.x, y: state.enemy.y }
+      const strikeZone = []
+      for (let dx = -1; dx <= 1; dx += 1) {
+        for (let dy = -1; dy <= 1; dy += 1) {
+          if (dx === 0 && dy === 0) continue
+          const x = state.player.x + dx
+          const y = state.player.y + dy
+          if (inBounds(x, y)) strikeZone.push({ x, y })
+        }
+      }
+      if (!canStrike(state)) {
+        return {
+          ...state,
+          strikeZone,
+        }
+      }
+
       const respawn = respawnAt(state.player, action.roll)
       const trail = [...state.enemyPath, startingCorner].filter((cell, index, cells) =>
         cells.findIndex((other) => other.x === cell.x && other.y === cell.y) === index,
@@ -166,11 +183,17 @@ export function gameReducer(state, action) {
       return {
         ...state,
         flash: startingCorner,
+        strikeZone,
         enemy: respawn,
         bloodTrail: trail,
         enemyPath: [respawn],
         log: 'You struck. It vanished and reformed in a corner.',
       }
+    }
+
+    case 'CLEAR_STRIKE_ZONE': {
+      if (!state.strikeZone) return state
+      return { ...state, strikeZone: null }
     }
 
     case 'CLEAR_BLOOD_TRAIL': {

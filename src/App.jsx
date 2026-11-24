@@ -1,7 +1,6 @@
 import { useEffect, useReducer, useState } from 'react'
 import Grid from './components/Grid'
 import {
-  canStrike,
   createInitialState,
   gameReducer,
   inBounds,
@@ -34,7 +33,7 @@ function App() {
     ) <= 2
 
   function moveBy(dx, dy) {
-    if (trackerReveal) return
+    if (trackerReveal || state.strikeZone) return
     if (state.status !== 'playing') return
     if (!inBounds(state.player.x + dx, state.player.y + dy)) return
     dispatch({
@@ -54,6 +53,12 @@ function App() {
     const id = setTimeout(() => dispatch({ type: 'CLEAR_FLASH' }), 450)
     return () => clearTimeout(id)
   }, [state.flash])
+
+  useEffect(() => {
+    if (!state.strikeZone) return undefined
+    const id = setTimeout(() => dispatch({ type: 'CLEAR_STRIKE_ZONE' }), 400)
+    return () => clearTimeout(id)
+  }, [state.strikeZone])
 
   useEffect(() => {
     if (!state.bloodTrail) return undefined
@@ -76,7 +81,7 @@ function App() {
         return
       }
 
-      if (trackerReveal) return
+      if (trackerReveal || state.strikeZone) return
 
       const move = KEY_MOVES[event.key.toLowerCase()]
       if (move) {
@@ -89,7 +94,7 @@ function App() {
       }
       if (event.key === ' ' || event.code === 'Space') {
         event.preventDefault()
-        if (!canStrike(state)) return
+        if (state.status !== 'playing' || trackerReveal) return
         dispatch({ type: 'STRIKE', roll: Math.random() })
       }
     }
@@ -141,9 +146,10 @@ function App() {
           reveal={debugReveal || trackerReveal}
           lightsOut={lightsOut}
           trackerNearPlayer={trackerNearPlayer}
-          paused={trackerReveal}
+          paused={trackerReveal || Boolean(state.strikeZone)}
           flash={state.flash}
           bloodTrail={state.bloodTrail}
+          strikeZone={state.strikeZone}
           status={state.status}
           onCellClick={onCellClick}
         />
