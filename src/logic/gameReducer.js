@@ -115,9 +115,15 @@ export function gameReducer(state, action) {
       if (!inBounds(player.x, player.y)) return state
 
       if (sameCell(player, state.enemy)) {
+        const bloodTrail = [...state.enemyPath, { x: state.enemy.x, y: state.enemy.y }].filter((cell, index, cells) =>
+          cells.findIndex((other) => other.x === cell.x && other.y === cell.y) === index,
+        )
         return {
           ...state,
           player,
+          enemy: state.enemy,
+          enemyPath: bloodTrail,
+          bloodTrail,
           flash: null,
           status: 'gameover',
           log: 'You stepped onto the enemy.',
@@ -126,10 +132,20 @@ export function gameReducer(state, action) {
 
       const { enemy, path, caught } = chase(state.enemy, player, action.roll)
       if (caught) {
+        const bloodTrail = [
+          ...state.enemyPath,
+          { x: state.enemy.x, y: state.enemy.y },
+          ...path,
+          { x: enemy.x, y: enemy.y },
+        ].filter((cell, index, cells) =>
+          cells.findIndex((other) => other.x === cell.x && other.y === cell.y) === index,
+        )
         return {
           ...state,
           player,
           enemy,
+          enemyPath: bloodTrail,
+          bloodTrail,
           flash: null,
           status: 'gameover',
           log: 'The enemy caught you.',
@@ -197,6 +213,7 @@ export function gameReducer(state, action) {
     }
 
     case 'CLEAR_BLOOD_TRAIL': {
+      if (state.status === 'gameover') return state
       if (!state.bloodTrail) return state
       return { ...state, bloodTrail: null }
     }

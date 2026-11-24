@@ -61,10 +61,10 @@ function App() {
   }, [state.strikeZone])
 
   useEffect(() => {
-    if (!state.bloodTrail) return undefined
+    if (!state.bloodTrail || state.status === 'gameover') return undefined
     const id = setTimeout(() => dispatch({ type: 'CLEAR_BLOOD_TRAIL' }), 650)
     return () => clearTimeout(id)
-  }, [state.bloodTrail])
+  }, [state.bloodTrail, state.status])
 
   useEffect(() => {
     if (state.status !== 'playing' || !trackerReveal) return undefined
@@ -148,7 +148,7 @@ function App() {
           trackerNearPlayer={trackerNearPlayer}
           paused={trackerReveal || Boolean(state.strikeZone)}
           flash={state.flash}
-          bloodTrail={state.bloodTrail}
+          bloodTrail={state.status === 'gameover' ? (state.bloodTrail || state.enemyPath) : state.bloodTrail}
           strikeZone={state.strikeZone}
           status={state.status}
           onCellClick={onCellClick}
@@ -156,9 +156,8 @@ function App() {
         {state.status === 'gameover' && (
           <div className="game-over">
             <h2>You're dead</h2>
-            <p>You survived {state.turns} steps.</p>
-            <button type="button" onClick={() => dispatch({ type: 'RESTART' })}>
-              Try Again
+            <button className="try-again" type="button" onClick={() => dispatch({ type: 'RESTART' })}>
+              Enter
             </button>
           </div>
         )}
