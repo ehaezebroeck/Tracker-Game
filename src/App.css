@@ -32,6 +32,11 @@
   letter-spacing: 0.04em;
 }
 
+.tracker-title {
+  -webkit-text-stroke: 3px #8f1d2c;
+  paint-order: stroke fill;
+}
+
 .tagline {
   margin: 0.25rem 0 0;
   color: #a4a4a4;
